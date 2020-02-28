@@ -1,39 +1,65 @@
 pipeline {
-    agent any
-    environment {
-        PROJECT_ID = 'key-line-266310'
-        CLUSTER_NAME = 'cd-playground'
-        LOCATION = 'us-central1-a'
-        CREDENTIALS_ID = 'gke'
+
+  environment {
+    PROJECT = 'key-line-266310'
+    APP_NAME = "node-app"
+    CLUSTER = "cd-playground"
+    CLUSTER_ZONE = "us-central1-a"
+    IMAGE_TAG = "gcr.io/${PROJECT}/${APP_NAME}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+    JENKINS_CRED = "${PROJECT}"    
+  }
+
+  agent {
+    kubernetes {
+      label 'node-app'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  # Use service account that can deploy to all namespaces
+  serviceAccountName: jenkins-cd
+  containers:
+  - name: golang
+    image: golang:1.10
+    command:
+    - cat
+    tty: true
+  - name: gcloud
+    image: gcr.io/cloud-builders/gcloud
+    command:
+    - cat
+    tty: true
+  - name: kubectl
+    image: gcr.io/cloud-builders/kubectl
+    command:
+    - cat
+    tty: true
+"""
+}
+  }
+    stage('Build and push image with Container Builder') {
+      steps {
+        container('gcloud') {
+          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ."
+        }
+      }
     }
-    stages {
-        stage("Checkout code") {
-            steps {
-                checkout scm
-            }
-        }
-        stage("Build image") {
-            steps {
-                script {
-                    myapp = docker.build("warolv/nodeapp:${env.BUILD_ID}")
-                }
-            }
-        }
-        stage("Push image") {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                            myapp.push("latest")
-                            myapp.push("${env.BUILD_ID}")
-                    }
-                }
-            }
-        }        
-        stage('Deploy to GKE') {
-            steps{
-                sh "sed -i 's/nodeapp:latest/nodeapp:${env.BUILD_ID}/g' ./k8s/deployment.yaml"
-                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'k8s/deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
-            }
-        }
-    }    
+    stage('Deploy Production') {
+      // Production branch
+      // when { branch 'master' }
+      // steps{
+      //   container('kubectl') {
+      //   // Change deployed image in canary to the one we just built
+      //     sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${IMAGE_TAG}#' ./k8s/production/*.yaml")
+      //     step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/services', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
+      //     step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/production', credentialsId: env.JENKINS_CRED, verifyDeployments: true])
+      //     sh("echo http://`kubectl --namespace=production get service/${FE_SVC_NAME} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` > ${FE_SVC_NAME}")
+      //   }
+      // }
+    }
+  }
 }
