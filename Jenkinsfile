@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        PROJECT_ID = 'PROJECT-ID'
-        CLUSTER_NAME = 'CLUSTER-NAME'
-        LOCATION = 'CLUSTER-LOCATION'
+        PROJECT_ID = 'key-line-266310'
+        CLUSTER_NAME = 'cd-playground'
+        LOCATION = 'us-central1-a'
         CREDENTIALS_ID = 'gke'
     }
     stages {
