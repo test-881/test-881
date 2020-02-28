@@ -21,7 +21,7 @@ labels:
   component: ci
 spec:
   # Use service account that can deploy to all namespaces
-  serviceAccountName: jenkins-cd
+  serviceAccountName: jenkins-tool
   containers:
   - name: golang
     image: golang:1.10
