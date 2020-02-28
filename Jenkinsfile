@@ -49,12 +49,5 @@ spec:
         }
       }
     }
-    stage('Deploy Production') {
-      // Production branch
-      when { branch 'master' }
-      steps{
-       
-      }
-    }
   }
 }
