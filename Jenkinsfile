@@ -41,6 +41,7 @@ spec:
 """
 }
   }
+  stages {
     stage('Build and push image with Container Builder') {
       steps {
         container('gcloud') {
@@ -50,16 +51,10 @@ spec:
     }
     stage('Deploy Production') {
       // Production branch
-      // when { branch 'master' }
-      // steps{
-      //   container('kubectl') {
-      //   // Change deployed image in canary to the one we just built
-      //     sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${IMAGE_TAG}#' ./k8s/production/*.yaml")
-      //     step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/services', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
-      //     step([$class: 'KubernetesEngineBuilder',namespace:'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/production', credentialsId: env.JENKINS_CRED, verifyDeployments: true])
-      //     sh("echo http://`kubectl --namespace=production get service/${FE_SVC_NAME} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` > ${FE_SVC_NAME}")
-      //   }
-      // }
+      when { branch 'master' }
+      steps{
+       
+      }
     }
   }
 }
