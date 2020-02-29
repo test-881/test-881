@@ -27,10 +27,10 @@ pipeline {
     stage('Build and push image with Container Builder') {
       steps {
         container('docker') {
-          sh "docker build -t ${IMAGE_TAG} ."
+          sh "docker build -t ${IMAGE_TAG} -t warolv/node-app:latest ."
           sh "docker login -u=warolv -p=typhoon81"
           sh "docker push ${IMAGE_TAG}"
-          sh "docker push warolv/node-app:lastest"
+          sh "docker push warolv/node-app:latest"
         }   
       }
     }
