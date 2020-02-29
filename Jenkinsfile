@@ -3,10 +3,9 @@ pipeline {
   environment {
     PROJECT = "jenkins-cd-269710"
     APP_NAME = "node-app"
-    CLUSTER = "jenkins-playground"
+    CLUSTER = "jenkins-play"
     CLUSTER_ZONE = "us-central1-a"
-    IMAGE_TAG = "warolv/node-app:${env.BUILD_NUMBER}"
-    JENKINS_CRED = "jenkins-k8s"    
+    IMAGE_TAG = "warolv/node-app-x:${env.BUILD_NUMBER}"
   }
 
   agent {
