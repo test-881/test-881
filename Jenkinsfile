@@ -38,8 +38,8 @@ pipeline {
       steps {
         container('kubectl') {
           sh("sed -i 's/node-app:latest/node-app:${env.BUILD_ID}/g' k8s/deployment.yaml")
-          sh("kubectl apply -f k8s/deployment.yaml --namespace=production")
-          // step([$class: 'KubernetesEngineBuilder',namespace: 'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/deployment.yaml', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
+          // sh("kubectl apply -f k8s/deployment.yaml --namespace=production")
+          step([$class: 'KubernetesEngineBuilder',namespace: 'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/deployment.yaml', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
         }   
       }
     }
