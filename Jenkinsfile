@@ -38,6 +38,7 @@ pipeline {
     stage('Deploy Production') {
       steps {
         container('kubectl') {
+          sh("kubectl get ns production || kubectl create ns production")
           sh("sed -i 's/node-app:latest/node-app:${env.BUILD_ID}/g' k8s/deployment.yaml")
           sh("kubectl apply -f k8s/deployment.yaml --namespace=production")
         }   
