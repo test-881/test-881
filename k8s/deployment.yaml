@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: node-app
-        image: warolv/node-app:latest
+        image: warolv/node-app:14
         imagePullPolicy: IfNotPresent # if exists, will not pull new image
         ports: 
         - containerPort: 80
