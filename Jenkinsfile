@@ -13,44 +13,8 @@ pipeline {
     kubernetes {
       label 'ci'
       defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-labels:
-  component: ci
-spec:
-  # Use service account that can deploy to all namespaces
-  serviceAccountName: jenkins-tool
-  containers:
-  - name: golang
-    image: golang:1.10
-    command:
-    - cat
-    tty: true
-  - name: gcloud
-    image: gcr.io/cloud-builders/gcloud
-    command:
-    - cat
-    tty: true
-  - name: kubectl
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true
-  - name: docker
-      image: docker:18.06.1
-      command: ["tail", "-f", "/dev/null"]
-      imagePullPolicy: Always
-      volumeMounts:
-        - name: docker
-          mountPath: /var/run/docker.sock # We use the k8s host docker engine
-  volumes:
-    - name: docker
-      hostPath:
-        path: /var/run/docker.sock
-"""
-}
+      yamlFile 'build-pod.yaml'
+    }
   }
   stages {
     stage('kubectl get pods - checking authorization') {
