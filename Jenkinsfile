@@ -6,7 +6,7 @@ pipeline {
     CLUSTER = "jenkins-cd"
     CLUSTER_ZONE = "us-central1-a"
     IMAGE_TAG = "warolv/node-app:${env.BUILD_NUMBER}"
-    JENKINS_CRED = "${PROJECT}"    
+    JENKINS_CRED = "k8s-deploy"    
   }
 
   agent {
