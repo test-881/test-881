@@ -1,9 +1,9 @@
 pipeline {
 
   environment {
-    PROJECT = "key-line-266310"
+    PROJECT = "jenkins-cd-269710"
     APP_NAME = "node-app"
-    CLUSTER = "standard-cluster-1"
+    CLUSTER = "jenkins-cd"
     CLUSTER_ZONE = "us-central1-a"
     IMAGE_TAG = "gcr.io/${PROJECT}/${APP_NAME}:${env.BUILD_NUMBER}"
     JENKINS_CRED = "k8s-build-deploy"    
@@ -11,7 +11,7 @@ pipeline {
 
   agent {
     kubernetes {
-      label 'node-app'
+      label 'ci'
       defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
