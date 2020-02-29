@@ -17,15 +17,16 @@ pipeline {
     }
   }
   stages {
-    stage('test node-app') {
+    stage('Test') {
       steps {
         container('node') {
           sh "npm install"
-          sh "chmod +x script/test; ./script/test"
+          sh "chmod +x ./script/test.sh"
+          sh "./script/test.sh"
         }
       }
     }
-    stage('Build and push image with Container Builder') {
+    stage('Build & Push') {
       steps {
         container('docker') {
           sh "docker build -t ${IMAGE_TAG} -t warolv/node-app:latest ."
