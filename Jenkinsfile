@@ -38,6 +38,17 @@ spec:
     command:
     - cat
     tty: true
+  - name: docker
+      image: docker:18.06.1
+      command: ["tail", "-f", "/dev/null"]
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: docker
+          mountPath: /var/run/docker.sock # We use the k8s host docker engine
+  volumes:
+    - name: docker
+      hostPath:
+        path: /var/run/docker.sock
 """
 }
   }
@@ -51,9 +62,9 @@ spec:
     }
     stage('Build and push image with Container Builder') {
       steps {
-        container('gcloud') {
-          sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ."
-        }
+        container('docker') {
+          sh "docker build -t warolv/node-app:${env.BUILD_NUMBER} ."
+          sh "docker push warolv/node-app:${env.BUILD_NUMBER}"       
       }
     }
   }
