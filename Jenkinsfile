@@ -3,7 +3,7 @@ pipeline {
   environment {
     PROJECT = "jenkins-cd-269710"
     APP_NAME = "node-app"
-    CLUSTER = "jenkins-cd"
+    CLUSTER = "jenkins-playground"
     CLUSTER_ZONE = "us-central1-a"
     IMAGE_TAG = "warolv/node-app:${env.BUILD_NUMBER}"
     JENKINS_CRED = "k8s-deploy"    
