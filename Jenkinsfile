@@ -64,7 +64,8 @@ spec:
       steps {
         container('docker') {
           sh "docker build -t warolv/node-app:${env.BUILD_NUMBER} ."
-          sh "docker push warolv/node-app:${env.BUILD_NUMBER}"       
+          sh "docker push warolv/node-app:${env.BUILD_NUMBER}"
+        }   
       }
     }
   }
