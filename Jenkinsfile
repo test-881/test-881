@@ -3,7 +3,7 @@ pipeline {
   environment {
     PROJECT = "key-line-266310"
     APP_NAME = "node-app"
-    CLUSTER = "cd-playground"
+    CLUSTER = "standard-cluster-1"
     CLUSTER_ZONE = "us-central1-a"
     IMAGE_TAG = "gcr.io/${PROJECT}/${APP_NAME}:${env.BUILD_NUMBER}"
     JENKINS_CRED = "k8s-build-deploy"    
@@ -42,17 +42,17 @@ spec:
 }
   }
   stages {
+    stage('kubectl get pods - checking authorization') {
+      steps {
+        container('kubectl') {
+          sh "kubectl get pods"
+        }
+      }
+    }
     stage('Build and push image with Container Builder') {
       steps {
         container('gcloud') {
           sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ."
-        }
-      }
-    }
-    stage('kubectl get pods') {
-      steps {
-        container('kubectl') {
-          sh "kubectl get pods"
         }
       }
     }
