@@ -6,7 +6,7 @@ pipeline {
     CLUSTER = "jenkins-cd"
     CLUSTER_ZONE = "us-central1-a"
     IMAGE_TAG = "warolv/node-app:${env.BUILD_NUMBER}"
-    JENKINS_CRED = "k8s-build-deploy"    
+    JENKINS_CRED = "${PROJECT}"    
   }
 
   agent {
@@ -30,6 +30,15 @@ pipeline {
           sh "docker build -t ${IMAGE_TAG} ."
           sh "docker login -u=warolv -p=typhoon81"
           sh "docker push ${IMAGE_TAG}"
+          sh "docker push warolv/node-app:lastest"
+        }   
+      }
+    }
+    stage('Deploy Production') {
+      steps {
+        container('kubectl') {
+          sh("sed -i 's/node-app:latest/node-app:${env.BUILD_ID}/g' k8s/deployment.yaml")
+          step([$class: 'KubernetesEngineBuilder',namespace: 'production', projectId: env.PROJECT, clusterName: env.CLUSTER, zone: env.CLUSTER_ZONE, manifestPattern: 'k8s/deployment.yaml', credentialsId: env.JENKINS_CRED, verifyDeployments: false])
         }   
       }
     }
