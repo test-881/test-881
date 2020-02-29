@@ -17,10 +17,11 @@ pipeline {
     }
   }
   stages {
-    stage('kubectl get pods - checking authorization') {
+    stage('test node-app') {
       steps {
-        container('kubectl') {
-          sh "kubectl get pods"
+        container('node') {
+          sh "npm install"
+          sh "./script/test"
         }
       }
     }
