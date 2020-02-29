@@ -21,7 +21,7 @@ pipeline {
       steps {
         container('node') {
           sh "npm install"
-          sh "./script/test"
+          sh "chmod +x script/test; ./script/test"
         }
       }
     }
